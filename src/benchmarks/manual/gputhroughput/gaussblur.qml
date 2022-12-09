@@ -1,5 +1,5 @@
 import QtQuick 2.2
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 // This benchmark is added to test how feasible live blurring
 // is. Live blurring is an extreme fillrate test and is only something that
