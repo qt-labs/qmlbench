@@ -146,7 +146,7 @@ int main(int argc, char **argv)
 
     QVector<Result> differencesInPercent;
 
-    for (const QString &test: qAsConst(tests)) {
+    for (const QString &test: std::as_const(tests)) {
         const QJsonObject baseLineResult = baseLine[test].toObject();
         const QJsonObject newResult = newResults[test].toObject();
         const QString testName = trimPrefix(test, prefix);
