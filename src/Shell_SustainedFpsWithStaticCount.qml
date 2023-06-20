@@ -49,7 +49,7 @@ Item {
             }
         }
         object.anchors.fill = benchmarkRoot;
-        root.targetFrameRate = benchmark.screeRefreshRate;
+        root.targetFrameRate = benchmark.screenRefreshRate;
         root.item = object;
         label.updateYerself()
     }

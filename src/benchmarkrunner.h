@@ -44,7 +44,7 @@ class BenchmarkRunner : public QObject
     // so flag it for simplicity
     Q_PROPERTY(QQuickView *view READ view CONSTANT)
     Q_PROPERTY(QQmlComponent *component READ component CONSTANT)
-    Q_PROPERTY(qreal screeRefreshRate READ screenRefreshRate CONSTANT)
+    Q_PROPERTY(qreal screenRefreshRate READ screenRefreshRate CONSTANT)
     Q_PROPERTY(QString input READ input CONSTANT)
     Q_PROPERTY(qreal fpsTolerance READ fpsTolerance CONSTANT)
     Q_PROPERTY(qreal fpsInterval READ fpsInterval CONSTANT)
