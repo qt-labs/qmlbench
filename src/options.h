@@ -54,6 +54,7 @@ struct Options
         , hardwareMultiplier(1.0)
         , destroyViewEachRun(false)
         , timeout(10*60*1000)
+        , useVulkan(false)
     {
     }
 
@@ -78,6 +79,7 @@ struct Options
     QList<Benchmark> benchmarks;
     bool destroyViewEachRun;
     int timeout;
+    bool useVulkan;
 
     static Options instance;
 };

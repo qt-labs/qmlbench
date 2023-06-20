@@ -47,6 +47,7 @@
 Options Options::instance;
 
 static const char *subprocessOptionString = "subprocess-mode";
+static const char *useVulkanOptionString = "use-vulkan";
 
 QStringList processCommandLineArguments(const QCoreApplication &app)
 {
@@ -162,6 +163,10 @@ QStringList processCommandLineArguments(const QCoreApplication &app)
                                    QStringLiteral("1.0"));
     parser.addOption(hardwareMultiplierOption);
 
+    QCommandLineOption useVulkanOption(QStringLiteral("use-vulkan"),
+                                         QStringLiteral("Change graphics backend to use Vulkan instead of OpenGL"));
+    parser.addOption(useVulkanOption);
+
     parser.addPositionalArgument(QStringLiteral("input"),
                                  QStringLiteral("One or more QML files or a directory of QML files to benchmark"));
     const QCommandLineOption &helpOption = parser.addHelpOption();
@@ -199,8 +204,10 @@ QStringList processCommandLineArguments(const QCoreApplication &app)
     Options::instance.frameCountInterval = parser.value(frameCountInterval).toInt();
     Options::instance.destroyViewEachRun = parser.isSet(destroyViewOption);
     Options::instance.timeout = parser.value(timeoutOption).toInt();
+    Options::instance.useVulkan = parser.isSet(useVulkanOption);
 
-    if (QGuiApplication::platformName() == QLatin1String("eglfs"))
+    if (QGuiApplication::platformName() == QLatin1String("eglfs")
+        || QGuiApplication::platformName() == QLatin1String("vkkhrdisplay"))
         Options::instance.fullscreen = true;
 
     if (Options::instance.fullscreen && qGuiApp->primaryScreen() != nullptr) {
@@ -439,9 +446,8 @@ int main(int argc, char **argv)
     qmlRegisterType<TestModel>("QmlBench", 1, 0, "TestModel");
     qmlRegisterSingletonType<QmlBench>("QmlBench", 1, 0, "QmlBench", qmlbench_singleton_provider);
 
-    QScopedPointer<QCoreApplication> app;
-
     bool needsGui = false;
+    bool useVulkan = false;
     for (int i = 0; i < argc; ++i) {
         // strstr because the actual option looks like "--foo" not "foo".
         // not perfect, but good enough.
@@ -449,7 +455,20 @@ int main(int argc, char **argv)
             needsGui = true;
             break;
         }
+        if (strstr(argv[i], useVulkanOptionString) != NULL) {
+            useVulkan = true;
+        }
     }
+
+    if (useVulkan) {
+        qputenv("QSG_RHI_BACKEND", QByteArray("vulkan"));
+#if !defined(VK_USE_PLATFORM_ANDROID_KHR) && !defined(VK_USE_PLATFORM_MACOS_MVK) && !defined(VK_USE_PLATFORM_WIN32_KHR) && !defined(VK_USE_PLATFORM_XCB_KHR)
+        qputenv("QT_QPA_PLATFORM", QByteArray("vkkhrdisplay"));
+#endif
+    }
+
+    QScopedPointer<QCoreApplication> app;
+
 
     if (needsGui) {
         app.reset(new QGuiApplication(argc, argv));

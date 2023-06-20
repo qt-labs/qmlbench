@@ -39,6 +39,10 @@
 #include <iostream>
 #include <cmath>
 
+#if QT_CONFIG(vulkan)
+#include <QVulkanInstance>
+#endif
+
 #include "resultrecorder.h"
 #include "options.h"
 
@@ -80,50 +84,82 @@ void ResultRecorder::startResults(const QString &id)
     m_results["qt"] = QT_VERSION_STR;
     m_results["command-line"] = qApp->arguments().join(' ');
 
-    // The following code makes the assumption that an OpenGL context the GUI
-    // thread will get the same capabilities as the render thread's OpenGL
-    // context. Not 100% accurate, but it works...
-    QOpenGLContext context;
-    context.create();
-    QOffscreenSurface surface;
-    // In very odd cases, we can get incompatible configs here unless we pass the
-    // GL context's format on to the offscreen format.
-    surface.setFormat(context.format());
-    surface.create();
-    if (!context.makeCurrent(&surface)) {
-        qWarning() << "failed to acquire GL context to get version info.";
-        return;
-    }
+    if (Options::instance.useVulkan) {
+#if QT_CONFIG(vulkan)
+        QVulkanInstance inst;
+        QVariantMap vulkanInfo;
+        vulkanInfo["API version"] = inst.supportedApiVersion().toString();
 
-    QOpenGLFunctions *func = context.functions();
+        QVariantMap vulkanExtensions = vulkanInfo["extensions"].toMap();
+        QVariantList vulkanExtensionInfo;
+
+        for (auto &ext : inst.supportedExtensions()) {
+            vulkanExtensionInfo = vulkanExtensions[ext.name].toList();
+            vulkanExtensionInfo.append(ext.version);
+            vulkanExtensions[ext.name] = vulkanExtensionInfo;
+        }
+        vulkanInfo["extensions"] = vulkanExtensions;
+
+        QVariantMap vulkanLayers = vulkanInfo["layers"].toMap();
+        QVariantList vulkanLayerInfo;
+
+        for (auto &layer : inst.supportedLayers()) {
+            vulkanLayerInfo = vulkanLayers[layer.name].toList();
+            vulkanLayerInfo.append(layer.specVersion.toString());
+            vulkanLayerInfo.append(layer.version);
+            vulkanLayerInfo.append(layer.description);
+            vulkanLayers[layer.name] = vulkanLayerInfo;
+        }
+        vulkanInfo["layers"] = vulkanLayers;
+
+        m_results["vulkan"] = vulkanInfo;
+#endif
+    } else {
+        // The following code makes the assumption that an OpenGL context the GUI
+        // thread will get the same capabilities as the render thread's OpenGL
+        // context. Not 100% accurate, but it works...
+        QOpenGLContext context;
+        context.create();
+        QOffscreenSurface surface;
+        // In very odd cases, we can get incompatible configs here unless we pass the
+        // GL context's format on to the offscreen format.
+        surface.setFormat(context.format());
+        surface.create();
+        if (!context.makeCurrent(&surface)) {
+            qWarning() << "failed to acquire GL context to get version info.";
+            return;
+        }
+
+        QOpenGLFunctions *func = context.functions();
 #if QT_VERSION >= 0x050300
-    const char *vendor = (const char *) func->glGetString(GL_VENDOR);
-    const char *renderer = (const char *) func->glGetString(GL_RENDERER);
-    const char *version = (const char *) func->glGetString(GL_VERSION);
+        const char *vendor = (const char *) func->glGetString(GL_VENDOR);
+        const char *renderer = (const char *) func->glGetString(GL_RENDERER);
+        const char *version = (const char *) func->glGetString(GL_VERSION);
 #else
-    Q_UNUSED(func);
-    const char *vendor = (const char *) glGetString(GL_VENDOR);
-    const char *renderer = (const char *) glGetString(GL_RENDERER);
-    const char *version = (const char *) glGetString(GL_VERSION);
+        Q_UNUSED(func);
+        const char *vendor = (const char *) glGetString(GL_VENDOR);
+        const char *renderer = (const char *) glGetString(GL_RENDERER);
+        const char *version = (const char *) glGetString(GL_VERSION);
 #endif
 
-    if (!Options::instance.printJsonToStdout) {
-        std::cout << "ID:          " << id.toStdString() << std::endl;
-        std::cout << "OS:          " << prettyProductName.toStdString() << std::endl;
-        std::cout << "QPA:         " << QGuiApplication::platformName().toStdString() << std::endl;
-        std::cout << "GL_VENDOR:   " << vendor << std::endl;
-        std::cout << "GL_RENDERER: " << renderer << std::endl;
-        std::cout << "GL_VERSION:  " << version << std::endl;
+        if (!Options::instance.printJsonToStdout) {
+            std::cout << "ID:          " << id.toStdString() << std::endl;
+            std::cout << "OS:          " << prettyProductName.toStdString() << std::endl;
+            std::cout << "QPA:         " << QGuiApplication::platformName().toStdString() << std::endl;
+            std::cout << "GL_VENDOR:   " << vendor << std::endl;
+            std::cout << "GL_RENDERER: " << renderer << std::endl;
+            std::cout << "GL_VERSION:  " << version << std::endl;
+        }
+
+        QVariantMap glInfo;
+        glInfo["vendor"] = vendor;
+        glInfo["renderer"] = renderer;
+        glInfo["version"] = version;
+
+        m_results["opengl"] = glInfo;
+
+        context.doneCurrent();
     }
-
-    QVariantMap glInfo;
-    glInfo["vendor"] = vendor;
-    glInfo["renderer"] = renderer;
-    glInfo["version"] = version;
-
-    m_results["opengl"] = glInfo;
-
-    context.doneCurrent();
 }
 
 void ResultRecorder::recordWindowSize(const QSize &windowSize)
