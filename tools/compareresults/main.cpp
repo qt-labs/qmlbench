@@ -156,7 +156,9 @@ int main(int argc, char **argv)
 
         const double differenceInPercent = (newValue - oldValue) * 100 / oldValue;
 
-        if (differenceInPercent > 0) {
+        if (differenceInPercent == INFINITY) {
+            printf("Reference testrun result for %s was zero. New result is %.f\n", qPrintable(testName), newValue);
+        } else if (differenceInPercent > 0) {
             printf("%s: improvement by %.2f%%\n", qPrintable(testName), differenceInPercent);
         } else if (differenceInPercent < 0) {
             printf("%s: regression by %.2f%%\n", qPrintable(testName), differenceInPercent);
