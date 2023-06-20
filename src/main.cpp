@@ -220,11 +220,15 @@ QStringList processCommandLineArguments(const QCoreApplication &app)
             Options::instance.windowSize = size;
     }
 
+    if (parser.isSet(fpsOverrideOption)) {
+            Options::instance.fpsOverride = parser.value(fpsOverrideOption).toFloat();
+    } else {
+        if (qGuiApp->primaryScreen() != nullptr)
+            Options::instance.targetFps = qGuiApp->primaryScreen()->refreshRate();
+    }
     ResultRecorder::startResults(Options::instance.id);
     ResultRecorder::recordWindowSize(Options::instance.windowSize);
-
-    if (parser.isSet(fpsOverrideOption))
-        Options::instance.fpsOverride = parser.value(fpsOverrideOption).toFloat();
+    ResultRecorder::recordScreenRefreshRate(Options::instance.targetFps);
 
     if (Options::instance.bmTemplate == QStringLiteral("sustained-fps"))
         Options::instance.bmTemplate = QStringLiteral("qrc:/Shell_SustainedFpsWithCount.qml");

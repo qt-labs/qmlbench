@@ -50,6 +50,7 @@ struct Options
         , fpsTolerance(0.05)
         , fpsInterval(1000)
         , fpsOverride(0)
+        , targetFps(60.0)
         , windowSize(800, 600)
         , hardwareMultiplier(1.0)
         , destroyViewEachRun(false)

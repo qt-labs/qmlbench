@@ -125,7 +125,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    const QSet<QString> unrelatedKeys{"command-line", "id", "opengl", "os", "qt", "windowSize"};
+    const QSet<QString> unrelatedKeys{"command-line", "id", "opengl", "os", "qt", "windowSize", "refreshRate"};
 
     auto filter = [&unrelatedKeys](const QStringList &list) -> QStringList {
         return QSet<QString>(list.cbegin(), list.cend()).subtract(unrelatedKeys).values();

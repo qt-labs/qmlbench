@@ -167,6 +167,11 @@ void ResultRecorder::recordWindowSize(const QSize &windowSize)
     m_results["windowSize"] = QString::number(windowSize.width()) + "x" + QString::number(windowSize.height());
 }
 
+void ResultRecorder::recordScreenRefreshRate(const qreal refreshRate)
+{
+    m_results["refreshRate"] = refreshRate;
+}
+
 void ResultRecorder::recordOperationsPerFrame(int ops)
 {
     Q_ASSERT(Options::instance.isSubProcess);
