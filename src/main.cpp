@@ -463,11 +463,18 @@ int main(int argc, char **argv)
             useVulkan = true;
         }
     }
-
     if (useVulkan) {
+#if QT_CONFIG(vulkan)
         qputenv("QSG_RHI_BACKEND", QByteArray("vulkan"));
-#if !defined(VK_USE_PLATFORM_ANDROID_KHR) && !defined(VK_USE_PLATFORM_MACOS_MVK) && !defined(VK_USE_PLATFORM_WIN32_KHR) && !defined(VK_USE_PLATFORM_XCB_KHR)
-        qputenv("QT_QPA_PLATFORM", QByteArray("vkkhrdisplay"));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 3)
+        if (QGuiApplication::platformName().contains("eglfs"))
+            qputenv("QT_QPA_PLATFORM", QByteArray("vkkhrdisplay"));
+#else
+        qInfo() << "Vulkan backend requested. If qmlbench fails to start, and executed on embedded, you need to define QT_QPA_PLATFORM=vkkhrdisplay";
+#endif
+#else
+        qWarning() << "Vulkan backend requested, but Qt was build without Vulkan support. Exiting.";
+        exit(0);
 #endif
     }
 
