@@ -65,6 +65,34 @@ CreationBenchmark {
             eulerRotation.y: -70
         }
 
+        Component {
+        id: weirdShape
+            Node {
+                property real xRotation: Math.random() * (360 - (-360)) + -360
+                property real yRotation: Math.random() * (360 - (-360)) + -360
+                property real zRotation: Math.random() * (360 - (-360)) + -360
+
+                property real hue: Math.random()
+
+                Model {
+                    source: "weirdShape.mesh"
+                    scale: Qt.vector3d(150, 150, 150)
+                    eulerRotation.x: 90
+
+                    SequentialAnimation on eulerRotation {
+                        loops: Animation.Infinite
+                        PropertyAnimation {
+                            duration: Math.random() * (10000 - 1000) + 1000
+                            to: Qt.vector3d(xRotation -  360, yRotation - 360, zRotation - 360)
+                            from: Qt.vector3d(xRotation, yRotation, zRotation)
+                        }
+                    }
+
+                    materials: [ DefaultMaterial { diffuseColor: Qt.hsva(hue, 1.0, 1.0, 1.0) } ]
+                }
+            }
+        }
+
         Node {
             id: shapeSpawner
             property real range: 300
@@ -77,7 +105,7 @@ CreationBenchmark {
                     var xPos = (2 * Math.random() * range) - range;
                     var yPos = (2 * Math.random() * range) - range;
                     var zPos = (2 * Math.random() * range) - range;
-                    var shapeComponent = Qt.createComponent("WeirdShape.qml");
+                    var shapeComponent = weirdShape
                     let instance = shapeComponent.createObject(shapeSpawner,
                         { "x": xPos, "y": yPos, "z": zPos, "scale": Qt.vector3d(0.05, 0.05, 0.05)});
                     instances.push(instance);

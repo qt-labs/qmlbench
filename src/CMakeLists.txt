@@ -203,7 +203,6 @@ set(qmlbench_resource_files
     "benchmarks/auto/quick3d/principledmaterial/maps/metallic/metallic.jpg"
     "benchmarks/auto/quick3d/principledmaterial/maps/metallic/normal.jpg"
     "benchmarks/auto/quick3d/principledmaterial/maps/metallic/roughness.jpg"
-    "benchmarks/auto/quick3d/shapespawner/WeirdShape.qml"
     "benchmarks/auto/quick3d/shapespawner/shapespawner.qml"
     "benchmarks/auto/quick3d/shapespawner/weirdShape.mesh"
     "shared/butterfly-collapsed.png"
