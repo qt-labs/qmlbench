@@ -238,12 +238,15 @@ void ResultRecorder::finish()
     }
     if (Options::instance.printJsonToFile) {
         QJsonDocument results = QJsonDocument::fromVariant(m_results);
-        QString outputFilePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QLatin1String("/qmlbench.txt");
+        const QString outputFilePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QLatin1String("/qmlbench.txt");
         QFile outputFile(outputFilePath);
-        outputFile.open(QIODevice::WriteOnly | QIODevice::Append);
-        QTextStream stream(&outputFile);
-        stream << results.toJson().constData();
-        stream.flush();
+        if (outputFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
+            QTextStream stream(&outputFile);
+            stream << results.toJson().constData();
+            stream.flush();
+        } else {
+            qWarning() << "Failed to open" << outputFilePath << "for writing";
+        }
     }
     m_results.clear();
 }
