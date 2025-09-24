@@ -10,3 +10,4 @@ tools/compareresults/compareresults
 .qmake.stash
 Makefile
 *.pro.user
+CMakeLists.txt.user*
