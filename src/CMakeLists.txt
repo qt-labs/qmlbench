@@ -173,6 +173,8 @@ set(qmlbench_resource_files
     "benchmarks/auto/creation/quick.validators/delegates_doublevalidator.qml"
     "benchmarks/auto/creation/quick.validators/delegates_intvalidator.qml"
     "benchmarks/auto/creation/quick.validators/delegates_regexpvalidator.qml"
+    "benchmarks/auto/creation/quick.vectorimage/delegates_vectorimage_svg.qml"
+    "benchmarks/auto/creation/quick.vectorimage/delegates_vectorimage_lottie.qml"
     "benchmarks/auto/creation/quick/delegates_flickable.qml"
     "benchmarks/auto/creation/quick/delegates_flipable.qml"
     "benchmarks/auto/creation/quick/delegates_focusscope.qml"
@@ -224,6 +226,8 @@ set(qmlbench_resource_files
     "shared/solid.png"
     "shared/qmldir"
     "shared/Globals.qml"
+    "shared/css_animate_props_multiple_values.svg"
+    "shared/bouncy_ball.json"
 )
 
 qt_internal_add_resource(qmlbench "qmlbench"
