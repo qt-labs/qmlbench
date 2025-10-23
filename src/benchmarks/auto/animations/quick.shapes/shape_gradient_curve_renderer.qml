@@ -6,7 +6,7 @@ Benchmark {
     id: root;
 
     count: 500
-    staticCount: 2000
+    staticCount: 5000
 
     RadialGradient {
         id: radialGradient
@@ -27,7 +27,15 @@ Benchmark {
             y: QmlBench.getRandom() * (root.height - height)
             width: 100
             height: 100
-            preferredRendererType: Shape.GeometryRenderer
+            preferredRendererType: Shape.CurveRenderer
+
+            PropertyAnimation on rotation {
+                from: 0
+                to: 360
+                running: true
+                loops: Animation.Infinite
+                duration: 1000
+            }
 
             ShapePath {
                 fillGradient: radialGradient

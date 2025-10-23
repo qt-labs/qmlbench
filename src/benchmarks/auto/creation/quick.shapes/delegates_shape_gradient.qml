@@ -4,8 +4,8 @@ import QmlBench
 
 CreationBenchmark {
     id: root;
-    count: 50;
-    staticCount: 250;
+    count: 200;
+    staticCount: 1000;
 
     RadialGradient {
         id: radialGradient

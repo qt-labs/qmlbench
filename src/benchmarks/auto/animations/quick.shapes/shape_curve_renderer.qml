@@ -8,18 +8,6 @@ Benchmark {
     count: 500
     staticCount: 2000
 
-    RadialGradient {
-        id: radialGradient
-        centerX: 50; centerY: 50
-        centerRadius: 50
-        focalX: centerX; focalY: centerY
-        GradientStop { position: 0; color: "blue" }
-        GradientStop { position: 0.2; color: "green" }
-        GradientStop { position: 0.4; color: "red" }
-        GradientStop { position: 0.6; color: "yellow" }
-        GradientStop { position: 1; color: "cyan" }
-    }
-
     Repeater {
         model: root.count
         Shape {
@@ -29,9 +17,17 @@ Benchmark {
             height: 100
             preferredRendererType: Shape.CurveRenderer
 
+            PropertyAnimation on rotation {
+                from: 0
+                to: 360
+                running: true
+                loops: Animation.Infinite
+                duration: 1000
+            }
+
             ShapePath {
-                fillGradient: radialGradient
-                strokeColor: "transparent"
+                fillColor: "red"
+                strokeColor: "green"
                 strokeWidth: 10
 
                 PathSvg {

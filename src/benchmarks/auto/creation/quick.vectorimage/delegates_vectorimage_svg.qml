@@ -4,8 +4,8 @@ import QmlBench
 
 CreationBenchmark {
     id: root;
-    count: 1;
-    staticCount: 1;
+    count: 10;
+    staticCount: 10;
 
     delegate: VectorImage {
         x: QmlBench.getRandom() * (root.width - width)

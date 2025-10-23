@@ -14,6 +14,26 @@ If this rule is observed, a benchmark should be able to run on low-grade embedde
 timing out and hanging, as well as on high-end hardware without acheiving 60fps
 (the typical soft cap if vsync cannot be disabled).
 
+## Continuous runs
+
+We run benchmarks continuously and record results for multiple different platforms. These are
+available through the testresults server: https://testresults.qt.io/grafana/d/000000012/overview
+
+To add new files to this, make sure they are placed in one of the subdirectories of benchmarks/auto:
+
+    benchmarks/auto/creation/
+    benchmarks/auto/changes/
+    benchmarks/auto/js
+    benchmarks/auto/animations/
+    benchmarks/auto/bindings/
+    benchmarks/auto/quick3d/
+
+These directories are searched recursively, so you may collect the tests under appropriate
+subdirectories inside of these. In addition, the tests must be added to the resource list
+in the main CMakeLists.txt file.
+
+If the tests depend on additional modules, they will not show up in the results. Contact
+the QA team for help in adding additional dependencies.
 
 ## A sample file
 

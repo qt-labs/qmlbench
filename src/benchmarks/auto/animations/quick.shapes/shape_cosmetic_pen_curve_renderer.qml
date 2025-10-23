@@ -10,14 +10,23 @@ Benchmark {
 
     Repeater {
         model: root.count
+        scale: 2
+        transformOrigin: Item.TopLeft
+
         Shape {
             x: QmlBench.getRandom() * (root.width - width)
             y: QmlBench.getRandom() * (root.height - height)
-            width: 200
-            height: 200
-            scale: 2
-            transformOrigin: Item.TopLeft
+            width: 100
+            height: 100
             preferredRendererType: Shape.CurveRenderer
+
+            PropertyAnimation on rotation {
+                from: 0
+                to: 360
+                running: true
+                loops: Animation.Infinite
+                duration: 1000
+            }
 
             ShapePath {
                 fillColor: "red"
