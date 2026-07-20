@@ -138,8 +138,8 @@ int main(int argc, char **argv)
         QSet<QString> resultsSet(newResultKeys.cbegin(), newResultKeys.cend());
 
         qWarning("Error: The two result files do not cover the same set of tests");
-        qWarning("Tests existing in the base line but missing from the new results: %s", qPrintable(baseLineSet.subtract(resultsSet).values().join("\t\n")));
-        qWarning("Tests existing in the new results but missing from the base line: %s", qPrintable(resultsSet.subtract(baseLineSet).values().join("\t\n")));
+        qWarning("Tests existing in the base line but missing from the new results: %s", qPrintable((baseLineSet - resultsSet).values().join("\t\n")));
+        qWarning("Tests existing in the new results but missing from the base line: %s", qPrintable((resultsSet - baseLineSet).values().join("\t\n")));
 
         return EXIT_FAILURE;
     }
